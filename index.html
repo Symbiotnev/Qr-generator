@@ -6,6 +6,7 @@
   <title>QR Generator</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -322,8 +323,9 @@
     </div>
 
     <div class="actions">
-      <button id="download-btn" disabled>↓ Download PNG</button>
-      <button id="copy-btn" disabled>⊕ Copy SVG</button>
+      <button id="download-btn" disabled>↓ PNG</button>
+      <button id="pdf-btn" disabled>↓ PDF</button>
+      <button id="copy-btn" disabled>⊕ Copy</button>
       <button id="clear-btn" disabled>✕ Clear</button>
     </div>
 
@@ -342,12 +344,13 @@
   const qrWrapper  = document.getElementById('qr-canvas-wrapper');
   const qrUrlLabel = document.getElementById('qr-url-label');
   const dlBtn      = document.getElementById('download-btn');
+  const pdfBtn     = document.getElementById('pdf-btn');
   const copyBtn    = document.getElementById('copy-btn');
   const clearBtn   = document.getElementById('clear-btn');
   const toast      = document.getElementById('toast');
 
-  let currentUrl   = '';
-  let qrInstance   = null;
+  let currentUrl  = '';
+  let qrInstance  = null;
 
   sizeSlider.addEventListener('input', () => {
     sizeLabel.textContent = sizeSlider.value + 'px';
@@ -383,32 +386,114 @@
     qrUrlLabel.textContent = currentUrl;
     placeholder.style.display = 'none';
     qrOutput.classList.add('visible');
-    dlBtn.disabled   = false;
-    copyBtn.disabled = false;
+    dlBtn.disabled    = false;
+    pdfBtn.disabled   = false;
+    copyBtn.disabled  = false;
     clearBtn.disabled = false;
   }
 
-  dlBtn.addEventListener('click', () => {
-    const canvas = qrWrapper.querySelector('canvas');
-    if (!canvas) return;
-    const link = document.createElement('a');
-    link.download = 'qrcode.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    showToast('Downloaded!');
-  });
+  // Build a clean offscreen canvas with guaranteed white bg from the QR img src
+  function getCleanCanvas() {
+    return new Promise((resolve, reject) => {
+      // qrcodejs renders an <img> tag — grab its src (a data URL)
+      const img = qrWrapper.querySelector('img');
+      const canvas = qrWrapper.querySelector('canvas');
 
-  copyBtn.addEventListener('click', async () => {
-    const canvas = qrWrapper.querySelector('canvas');
-    if (!canvas) return;
-    canvas.toBlob(async blob => {
-      try {
-        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-        showToast('Copied to clipboard!');
-      } catch {
-        showToast('Copy not supported — use Download');
+      const size = parseInt(sizeSlider.value);
+      const offscreen = document.createElement('canvas');
+      offscreen.width  = size;
+      offscreen.height = size;
+      const ctx = offscreen.getContext('2d');
+
+      // Always fill white first so background is guaranteed
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, size, size);
+
+      if (img && img.src) {
+        const image = new Image();
+        image.onload = () => {
+          ctx.drawImage(image, 0, 0, size, size);
+          resolve(offscreen);
+        };
+        image.onerror = reject;
+        image.src = img.src;
+      } else if (canvas) {
+        // fallback: draw from live canvas
+        ctx.drawImage(canvas, 0, 0, size, size);
+        resolve(offscreen);
+      } else {
+        reject(new Error('No QR element found'));
       }
     });
+  }
+
+  // PNG Download
+  dlBtn.addEventListener('click', async () => {
+    try {
+      const offscreen = await getCleanCanvas();
+      const link = document.createElement('a');
+      link.download = 'qrcode.png';
+      link.href = offscreen.toDataURL('image/png');
+      link.click();
+      showToast('PNG downloaded!');
+    } catch (e) {
+      showToast('Download failed — try again');
+    }
+  });
+
+  // PDF Download
+  pdfBtn.addEventListener('click', async () => {
+    try {
+      const offscreen = await getCleanCanvas();
+      const imgData = offscreen.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+
+      // A4 page, portrait
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+
+      // Center QR on page — 100mm wide
+      const qrMM = 100;
+      const x = (pageW - qrMM) / 2;
+      const y = (pageH - qrMM) / 2 - 10;
+
+      // White background behind QR
+      doc.setFillColor(255, 255, 255);
+      doc.rect(x - 2, y - 2, qrMM + 4, qrMM + 4, 'F');
+
+      doc.addImage(imgData, 'PNG', x, y, qrMM, qrMM);
+
+      // URL label below
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(100, 100, 100);
+      const label = currentUrl.length > 60 ? currentUrl.slice(0, 57) + '...' : currentUrl;
+      doc.text(label, pageW / 2, y + qrMM + 8, { align: 'center' });
+
+      doc.save('qrcode.pdf');
+      showToast('PDF downloaded!');
+    } catch (e) {
+      console.error(e);
+      showToast('PDF failed — try again');
+    }
+  });
+
+  // Copy to clipboard
+  copyBtn.addEventListener('click', async () => {
+    try {
+      const offscreen = await getCleanCanvas();
+      offscreen.toBlob(async blob => {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          showToast('Copied to clipboard!');
+        } catch {
+          showToast('Copy not supported — use Download');
+        }
+      });
+    } catch {
+      showToast('Copy failed');
+    }
   });
 
   clearBtn.addEventListener('click', () => {
@@ -418,8 +503,9 @@
     urlInput.value = '';
     qrOutput.classList.remove('visible');
     placeholder.style.display = '';
-    dlBtn.disabled   = true;
-    copyBtn.disabled = true;
+    dlBtn.disabled    = true;
+    pdfBtn.disabled   = true;
+    copyBtn.disabled  = true;
     clearBtn.disabled = true;
   });
 
