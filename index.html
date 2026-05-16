@@ -24,7 +24,7 @@
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: 2rem;
     }
@@ -33,7 +33,7 @@
       background: var(--paper);
       border: var(--border);
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       position: relative;
     }
 
@@ -110,11 +110,8 @@
       white-space: nowrap;
     }
 
-    .input-row button:hover {
-      background: #333;
-    }
+    .input-row button:hover { background: #333; }
 
-    /* QR output area */
     .qr-area {
       border: var(--border);
       min-height: 280px;
@@ -136,9 +133,7 @@
       color: var(--mid);
     }
 
-    .qr-placeholder svg {
-      opacity: 0.3;
-    }
+    .qr-placeholder svg { opacity: 0.3; }
 
     .qr-placeholder p {
       font-family: 'Space Mono', monospace;
@@ -158,9 +153,7 @@
 
     #qr-output.visible { display: flex; }
 
-    #qr-canvas-wrapper {
-      line-height: 0;
-    }
+    #qr-canvas-wrapper { line-height: 0; }
 
     #qr-canvas-wrapper canvas,
     #qr-canvas-wrapper img {
@@ -181,47 +174,6 @@
       white-space: nowrap;
     }
 
-    .actions {
-      display: flex;
-      gap: 0;
-      border: var(--border);
-    }
-
-    .actions button {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 0.7rem 1rem;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      color: var(--ink);
-    }
-
-    .actions button:not(:last-child) {
-      border-right: var(--border);
-    }
-
-    .actions button:hover {
-      background: var(--ink);
-      color: var(--paper);
-    }
-
-    .actions button:disabled {
-      color: var(--mid);
-      cursor: not-allowed;
-    }
-
-    .actions button:disabled:hover {
-      background: transparent;
-      color: var(--mid);
-    }
-
-    /* Size control */
     .size-row {
       display: flex;
       align-items: center;
@@ -252,6 +204,163 @@
       text-align: right;
     }
 
+    .actions {
+      display: flex;
+      gap: 0;
+      border: var(--border);
+    }
+
+    .actions button {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0.7rem 1rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      color: var(--ink);
+    }
+
+    .actions button:not(:last-child) { border-right: var(--border); }
+
+    .actions button:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .actions button:disabled {
+      color: var(--mid);
+      cursor: not-allowed;
+    }
+
+    .actions button:disabled:hover {
+      background: transparent;
+      color: var(--mid);
+    }
+
+    /* SVG Panel */
+    .svg-panel {
+      display: none;
+      flex-direction: column;
+      border: var(--border);
+      overflow: hidden;
+    }
+
+    .svg-panel.visible { display: flex; }
+
+    .svg-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1rem;
+      border-bottom: var(--border);
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .svg-panel-header span {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .svg-panel-tabs {
+      display: flex;
+      gap: 0;
+    }
+
+    .svg-tab {
+      background: transparent;
+      border: none;
+      border-left: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.5);
+      padding: 0 0.75rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .svg-tab:hover, .svg-tab.active { color: #fff; }
+
+    /* Two-pane layout */
+    .svg-panes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .svg-preview-pane {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-right: var(--border);
+      padding: 1rem;
+      min-height: 200px;
+    }
+
+    .svg-preview-pane svg {
+      max-width: 100%;
+      max-height: 180px;
+    }
+
+    .svg-code-pane {
+      position: relative;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+
+    .svg-code-inner {
+      height: 200px;
+      overflow-y: auto;
+      padding: 0.75rem 1rem;
+      scrollbar-width: thin;
+      scrollbar-color: #333 #0a0a0a;
+    }
+
+    .svg-code-inner::-webkit-scrollbar { width: 4px; }
+    .svg-code-inner::-webkit-scrollbar-track { background: #0a0a0a; }
+    .svg-code-inner::-webkit-scrollbar-thumb { background: #333; }
+
+    #svg-code-display {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      line-height: 1.6;
+      color: #8a8a8a;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    #svg-code-display .tok-tag   { color: #e06c75; }
+    #svg-code-display .tok-attr  { color: #d19a66; }
+    #svg-code-display .tok-val   { color: #98c379; }
+    #svg-code-display .tok-num   { color: #61afef; }
+
+    .copy-svg-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #888;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .copy-svg-btn:hover { color: #fff; border-color: #666; }
+
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -280,7 +389,7 @@
 <div class="card">
   <div class="card-header">
     <h1>QR Generator</h1>
-    <span>// BLACK &amp; WHITE</span>
+    <span>// PDF + SVG</span>
   </div>
 
   <div class="card-body">
@@ -322,11 +431,30 @@
       </div>
     </div>
 
+    <!-- Actions: PDF + SVG only -->
     <div class="actions">
-      <button id="download-btn" disabled>↓ PNG</button>
       <button id="pdf-btn" disabled>↓ PDF</button>
-      <button id="copy-btn" disabled>⊕ Copy</button>
+      <button id="svg-btn" disabled>⟨/⟩ SVG</button>
       <button id="clear-btn" disabled>✕ Clear</button>
+    </div>
+
+    <!-- SVG split panel: preview left, code right -->
+    <div class="svg-panel" id="svg-panel">
+      <div class="svg-panel-header">
+        <span>SVG Output</span>
+        <div class="svg-panel-tabs">
+          <button class="svg-tab" id="close-svg-btn">✕ Close</button>
+        </div>
+      </div>
+      <div class="svg-panes">
+        <div class="svg-preview-pane" id="svg-preview-pane"></div>
+        <div class="svg-code-pane">
+          <div class="svg-code-inner">
+            <pre id="svg-code-display"></pre>
+          </div>
+          <button class="copy-svg-btn" id="copy-svg-btn">Copy</button>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -335,22 +463,27 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const urlInput   = document.getElementById('url-input');
-  const genBtn     = document.getElementById('generate-btn');
-  const sizeSlider = document.getElementById('size-slider');
-  const sizeLabel  = document.getElementById('size-label');
-  const placeholder= document.getElementById('qr-placeholder');
-  const qrOutput   = document.getElementById('qr-output');
-  const qrWrapper  = document.getElementById('qr-canvas-wrapper');
-  const qrUrlLabel = document.getElementById('qr-url-label');
-  const dlBtn      = document.getElementById('download-btn');
-  const pdfBtn     = document.getElementById('pdf-btn');
-  const copyBtn    = document.getElementById('copy-btn');
-  const clearBtn   = document.getElementById('clear-btn');
-  const toast      = document.getElementById('toast');
+  const urlInput    = document.getElementById('url-input');
+  const genBtn      = document.getElementById('generate-btn');
+  const sizeSlider  = document.getElementById('size-slider');
+  const sizeLabel   = document.getElementById('size-label');
+  const placeholder = document.getElementById('qr-placeholder');
+  const qrOutput    = document.getElementById('qr-output');
+  const qrWrapper   = document.getElementById('qr-canvas-wrapper');
+  const qrUrlLabel  = document.getElementById('qr-url-label');
+  const pdfBtn      = document.getElementById('pdf-btn');
+  const svgBtn      = document.getElementById('svg-btn');
+  const clearBtn    = document.getElementById('clear-btn');
+  const svgPanel    = document.getElementById('svg-panel');
+  const svgPreview  = document.getElementById('svg-preview-pane');
+  const svgCodeEl   = document.getElementById('svg-code-display');
+  const copySvgBtn  = document.getElementById('copy-svg-btn');
+  const closeSvgBtn = document.getElementById('close-svg-btn');
+  const toast       = document.getElementById('toast');
 
-  let currentUrl  = '';
-  let qrInstance  = null;
+  let currentUrl = '';
+  let qrInstance = null;
+  let currentSVG = '';
 
   sizeSlider.addEventListener('input', () => {
     sizeLabel.textContent = sizeSlider.value + 'px';
@@ -371,9 +504,10 @@
   function generateQR() {
     qrWrapper.innerHTML = '';
     if (qrInstance) { qrInstance.clear(); qrInstance = null; }
+    svgPanel.classList.remove('visible');
+    currentSVG = '';
 
     const size = parseInt(sizeSlider.value);
-
     qrInstance = new QRCode(qrWrapper, {
       text: currentUrl,
       width: size,
@@ -386,126 +520,254 @@
     qrUrlLabel.textContent = currentUrl;
     placeholder.style.display = 'none';
     qrOutput.classList.add('visible');
-    dlBtn.disabled    = false;
     pdfBtn.disabled   = false;
-    copyBtn.disabled  = false;
+    svgBtn.disabled   = false;
     clearBtn.disabled = false;
   }
 
-  // Build a clean offscreen canvas with guaranteed white bg from the QR img src
-  function getCleanCanvas() {
+  // ── SVG generation from canvas ──────────────────────────────────────────────
+  function canvasToSVG() {
     return new Promise((resolve, reject) => {
-      // qrcodejs renders an <img> tag — grab its src (a data URL)
       const img = qrWrapper.querySelector('img');
-      const canvas = qrWrapper.querySelector('canvas');
-
+      const canvasEl = qrWrapper.querySelector('canvas');
       const size = parseInt(sizeSlider.value);
+
       const offscreen = document.createElement('canvas');
-      offscreen.width  = size;
-      offscreen.height = size;
+      offscreen.width = offscreen.height = size;
       const ctx = offscreen.getContext('2d');
 
-      // Always fill white first so background is guaranteed
+      const finish = () => {
+        const imageData = ctx.getImageData(0, 0, size, size);
+        const data = imageData.data;
+
+        // Sample on a coarse grid to find module size
+        // QR codes have quiet zones; find first dark pixel row/col
+        let firstDark = -1;
+        for (let y = 0; y < size && firstDark === -1; y++) {
+          for (let x = 0; x < size; x++) {
+            const i = (y * size + x) * 4;
+            if (data[i] < 128) { firstDark = y; break; }
+          }
+        }
+
+        // Estimate module count by scanning a row for transitions
+        // Use row at firstDark + 1 to get stable reading
+        const row = Math.min(firstDark + 2, size - 1);
+        let transitions = 0;
+        let prev = data[(row * size) * 4] < 128;
+        for (let x = 1; x < size; x++) {
+          const isDark = data[(row * size + x) * 4] < 128;
+          if (isDark !== prev) { transitions++; prev = isDark; }
+        }
+        // modules ≈ (transitions + 1) / 2 columns but we just use pixel sampling
+        // Simpler: scan each pixel and group into modules by rounding
+
+        // Build rects: for each pixel sample the center
+        // For large QRs, group adjacent dark pixels into rect runs (run-length per row)
+        const rects = [];
+        for (let row = 0; row < size; row++) {
+          let runStart = -1;
+          for (let col = 0; col <= size; col++) {
+            const isDark = col < size && data[(row * size + col) * 4] < 128;
+            if (isDark && runStart === -1) {
+              runStart = col;
+            } else if (!isDark && runStart !== -1) {
+              rects.push({ x: runStart, y: row, w: col - runStart, h: 1 });
+              runStart = -1;
+            }
+          }
+        }
+
+        // Merge vertically: if rect at (x,y,w,1) matches (x,y+1,w,1) → extend h
+        const merged = [];
+        // Sort by x, y
+        rects.sort((a, b) => a.x - b.x || a.y - b.y);
+
+        // Simple vertical merge using a map
+        const key = r => `${r.x},${r.w}`;
+        const active = new Map();
+        const allRows = [...new Set(rects.map(r => r.y))].sort((a,b)=>a-b);
+
+        // group rects by row
+        const byRow = {};
+        for (const r of rects) {
+          if (!byRow[r.y]) byRow[r.y] = [];
+          byRow[r.y].push(r);
+        }
+
+        const openRects = new Map(); // key → {x,y,w,h}
+
+        for (let row = 0; row < size; row++) {
+          const rowRects = byRow[row] || [];
+          const rowKeys = new Set(rowRects.map(r => `${r.x},${r.w}`));
+
+          // Close open rects not continued
+          for (const [k, rect] of openRects) {
+            if (!rowKeys.has(k)) {
+              merged.push(rect);
+              openRects.delete(k);
+            }
+          }
+
+          // Extend or open
+          for (const r of rowRects) {
+            const k = `${r.x},${r.w}`;
+            if (openRects.has(k)) {
+              openRects.get(k).h++;
+            } else {
+              openRects.set(k, { x: r.x, y: r.y, w: r.w, h: 1 });
+            }
+          }
+        }
+
+        // Close remaining
+        for (const rect of openRects.values()) merged.push(rect);
+
+        // Build SVG string
+        const svgParts = [
+          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" shape-rendering="crispEdges">`
+        ];
+        svgParts.push(`  <rect width="${size}" height="${size}" fill="#ffffff"/>`);
+        for (const r of merged) {
+          svgParts.push(`  <rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" fill="#000000"/>`);
+        }
+        svgParts.push(`</svg>`);
+
+        resolve(svgParts.join('\n'));
+      };
+
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, size, size);
 
       if (img && img.src) {
         const image = new Image();
-        image.onload = () => {
-          ctx.drawImage(image, 0, 0, size, size);
-          resolve(offscreen);
-        };
+        image.onload = () => { ctx.drawImage(image, 0, 0, size, size); finish(); };
         image.onerror = reject;
         image.src = img.src;
-      } else if (canvas) {
-        // fallback: draw from live canvas
-        ctx.drawImage(canvas, 0, 0, size, size);
-        resolve(offscreen);
+      } else if (canvasEl) {
+        ctx.drawImage(canvasEl, 0, 0, size, size);
+        finish();
       } else {
         reject(new Error('No QR element found'));
       }
     });
   }
 
-  // PNG Download
-  dlBtn.addEventListener('click', async () => {
+  // Syntax highlight SVG
+  function highlightSVG(code) {
+    return code
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/(&lt;\/?)([\w]+)/g, (_, bracket, tag) =>
+        `<span class="tok-tag">${bracket}${tag}</span>`)
+      .replace(/([\w-]+)=/g, '<span class="tok-attr">$1</span>=')
+      .replace(/&quot;([^&]*)&quot;/g, '&quot;<span class="tok-val">$1</span>&quot;')
+      .replace(/\b(\d+(\.\d+)?)\b/g, '<span class="tok-num">$1</span>');
+  }
+
+  // SVG button
+  svgBtn.addEventListener('click', async () => {
     try {
-      const offscreen = await getCleanCanvas();
-      const link = document.createElement('a');
-      link.download = 'qrcode.png';
-      link.href = offscreen.toDataURL('image/png');
-      link.click();
-      showToast('PNG downloaded!');
-    } catch (e) {
-      showToast('Download failed — try again');
+      const svgStr = await canvasToSVG();
+      currentSVG = svgStr;
+
+      // Show preview
+      svgPreview.innerHTML = svgStr;
+      svgPreview.querySelector('svg').style.maxWidth = '100%';
+      svgPreview.querySelector('svg').style.maxHeight = '180px';
+
+      // Show highlighted code
+      svgCodeEl.innerHTML = highlightSVG(svgStr);
+      svgPanel.classList.add('visible');
+      svgPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch(e) {
+      showToast('SVG generation failed');
     }
   });
 
-  // PDF Download
+  // Copy SVG code
+  copySvgBtn.addEventListener('click', async () => {
+    if (!currentSVG) return;
+    try {
+      await navigator.clipboard.writeText(currentSVG);
+      showToast('SVG code copied!');
+      copySvgBtn.textContent = 'Copied!';
+      setTimeout(() => copySvgBtn.textContent = 'Copy', 1800);
+    } catch {
+      showToast('Copy failed — select manually');
+    }
+  });
+
+  closeSvgBtn.addEventListener('click', () => {
+    svgPanel.classList.remove('visible');
+  });
+
+  // ── PDF ─────────────────────────────────────────────────────────────────────
+  function getCleanCanvas() {
+    return new Promise((resolve, reject) => {
+      const img = qrWrapper.querySelector('img');
+      const canvasEl = qrWrapper.querySelector('canvas');
+      const size = parseInt(sizeSlider.value);
+
+      const offscreen = document.createElement('canvas');
+      offscreen.width = offscreen.height = size;
+      const ctx = offscreen.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, size, size);
+
+      if (img && img.src) {
+        const image = new Image();
+        image.onload = () => { ctx.drawImage(image, 0, 0, size, size); resolve(offscreen); };
+        image.onerror = reject;
+        image.src = img.src;
+      } else if (canvasEl) {
+        ctx.drawImage(canvasEl, 0, 0, size, size); resolve(offscreen);
+      } else {
+        reject(new Error('No QR element found'));
+      }
+    });
+  }
+
   pdfBtn.addEventListener('click', async () => {
     try {
       const offscreen = await getCleanCanvas();
       const imgData = offscreen.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
-
-      // A4 page, portrait
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pageW = doc.internal.pageSize.getWidth();
       const pageH = doc.internal.pageSize.getHeight();
 
-      // Center QR on page — 100mm wide
       const qrMM = 100;
       const x = (pageW - qrMM) / 2;
       const y = (pageH - qrMM) / 2 - 10;
 
-      // White background behind QR
       doc.setFillColor(255, 255, 255);
       doc.rect(x - 2, y - 2, qrMM + 4, qrMM + 4, 'F');
-
       doc.addImage(imgData, 'PNG', x, y, qrMM, qrMM);
 
-      // URL label below
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(100, 100, 100);
       const label = currentUrl.length > 60 ? currentUrl.slice(0, 57) + '...' : currentUrl;
       doc.text(label, pageW / 2, y + qrMM + 8, { align: 'center' });
-
       doc.save('qrcode.pdf');
       showToast('PDF downloaded!');
-    } catch (e) {
-      console.error(e);
+    } catch(e) {
       showToast('PDF failed — try again');
     }
   });
 
-  // Copy to clipboard
-  copyBtn.addEventListener('click', async () => {
-    try {
-      const offscreen = await getCleanCanvas();
-      offscreen.toBlob(async blob => {
-        try {
-          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-          showToast('Copied to clipboard!');
-        } catch {
-          showToast('Copy not supported — use Download');
-        }
-      });
-    } catch {
-      showToast('Copy failed');
-    }
-  });
-
+  // ── Clear ───────────────────────────────────────────────────────────────────
   clearBtn.addEventListener('click', () => {
     qrWrapper.innerHTML = '';
     if (qrInstance) { qrInstance.clear(); qrInstance = null; }
     currentUrl = '';
+    currentSVG = '';
     urlInput.value = '';
     qrOutput.classList.remove('visible');
+    svgPanel.classList.remove('visible');
     placeholder.style.display = '';
-    dlBtn.disabled    = true;
     pdfBtn.disabled   = true;
-    copyBtn.disabled  = true;
+    svgBtn.disabled   = true;
     clearBtn.disabled = true;
   });
 
